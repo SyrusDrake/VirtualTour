@@ -4,12 +4,14 @@ from pyflightdata import FlightData
 from datetime import datetime, timedelta
 from time import gmtime, strftime
 import time
-from classes import Player, Flight
+from Player import Player
+from Flight import Flight
 import keyring
 import threading
 import logging
 import sched
 
+# Sets up logger to record all bad flights.
 formatter = logging.Formatter("%(asctime)s_%(name)s\n%(message)s\n")
 
 bad_flight = logging.getLogger('Bad Flight')
@@ -20,12 +22,9 @@ file_handler.setFormatter(formatter)
 bad_flight.addHandler(file_handler)
 
 
-# utc_time = int(datetime.utcnow().timestamp())
-# usr_time = int(datetime.now().timestamp())
-# usr_offset = usr_time - utc_time
-utc_time = datetime.utcnow()
-usr_time = datetime.now()
-usr_offset = usr_time - utc_time
+utc_time = datetime.utcnow()    # Current UTC time
+usr_time = datetime.now()       # Current system time
+usr_offset = usr_time - utc_time    # Offset
 player = Player('Syrus', 'flo.fruehwirth@gmail.com', 'LAX', usr_offset)
 f = FlightData()
 f.login(player.username, keyring.get_password('FR24', player.username))
@@ -34,27 +33,40 @@ print(f.is_authenticated())
 
 
 def start_thread(function, delay, *args):
+    """Threading is required to wait for event (eg. departure) while still
+    allowing the app to be used.
+
+    Args:
+        function: Function to be executed in the thread.
+        delay (int): Frequency with which the function should be executed.
+        *args: Arguments passed to the function.
+    """
     threading.Timer(delay, function, args).start()
 
 
-def check_in(evt_time, number):
-    scheduler = sched.scheduler(datetime.now, time.sleep)
-    evt_time = evt_time + usr_offset
-    # lambda needs to target an event so it can be canceled
-    # Also, these functions should probably live inside a class...
-    threading.Thread(target=lambda: scheduler.enterabs(evt_time, 2, check_dep, [number])).start()
-    scheduler.run()
-    print(f'Checking in to flight {number}, departing at {evt_time.time()} UTC')
-
-
 def check_dep(number, limit=30):
+    """Checks if flight has departed.
+
+    When a flight departs, its status bool is set to True. This function checks
+    for this change. If the flight has not gone live, the function will
+    restart itself in a background thread and check again in one minute.
+
+    Args:
+        number (str): The flight number of the flight to be checked.
+        limit (int): Defaults to 30. The length of the flight history list. This
+            is necessary because the current flight is not always the first
+            flight in the list. Future flights may be above. Most flights will
+            require limits well below 30.
+    """
     flight = f.get_history_by_flight_number(number, limit=limit)
     now = datetime.now()
     print(f'ping at: {now}')
     for i in flight:
         if i['status']['live'] is True:
             print(i)
+            print(i['time']['real']['departure'])
             print('is live')
+            player.is_inflight = True
             return
 
     start_thread(check_dep, 60, number)
@@ -62,6 +74,12 @@ def check_dep(number, limit=30):
 
 
 class App(tk.Tk):
+
+    """The main class that starts the app and keeps it running.
+
+    In this class, the frames are created, as well as the functions to switch
+    between them.
+    """
     def __init__(self):
         tk.Tk.__init__(self)
 
@@ -99,6 +117,15 @@ class App(tk.Tk):
 
 
 class Start(tk.Frame):
+
+    """Start page w/ navigation to other pages
+
+    Args:
+        container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
+            loaded.
+        controller (:obj:`class`): Controller-class in which the frame-switching
+            function is defined.
+    """
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container, bg='blue')
 
@@ -114,6 +141,15 @@ class Start(tk.Frame):
 
 
 class PlayerInfo(tk.Frame):
+
+    """Player info page
+
+    Args:
+        container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
+            loaded.
+        controller (:obj:`class`): Controller-class in which the frame-switching
+            function is defined.
+    """
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container)
 
@@ -125,6 +161,15 @@ class PlayerInfo(tk.Frame):
 
 
 class CurrentFlight(tk.Frame):
+
+    """Info about the current flight the player is on
+
+    Args:
+        container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
+            loaded.
+        controller (:obj:`class`): Controller-class in which the frame-switching
+            function is defined.
+    """
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container)
 
@@ -132,6 +177,16 @@ class CurrentFlight(tk.Frame):
 
 
 class Departures(tk.Frame):
+    """Departure screen
+
+    Shows a list of all the upcoming departures from the current airport.
+
+    Args:
+        container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
+            loaded.
+        controller (:obj:`class`): Controller-class in which the frame-switching
+            function is defined.
+    """
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container)
 
@@ -271,13 +326,55 @@ class Departures(tk.Frame):
         self.dist_entry.insert(0, flight.distance)
 
     def check_in(self, flight):
+        """Sets the active flight for the player and waits for departure.
+
+        `player_cur_flt` will be set to the selected flight (object).
+        A scheduler will be set that waits until the *scheduled* departure of
+        the flight. Once that time is reached, the program will check every
+        60 seconds if the flight has gone live.
+
+        Args:
+            flight (:obj:`Flight`): The flight selected
+        """
         # pass selected flight to Player
         player.cur_flt = flight
-
+        player.is_chk_in = True
         # start countdown and wait for departure
-        check_in(flight.dep_time, flight.number)
+        print(f'Checking in to flight {flight.number}, departing at {flight.dep_time.time()} UTC')
+        self.stand_by(flight.dep_time, flight.number)
+
+    def stand_by(self, evt_time, number):
+        """Waiting for scheduled time
+
+        Starts a scheduler in a separate thread that will run in the background
+        until a specific time is reached, usually a time in a flight's
+        schedule. Once that specific time is reached, the program will regularly
+        check if the state of the flight has changed as expected.
+
+        Todo:
+            * Storing schedule times in the `Flight` class as a Unix timestamp
+              might be more convenient.
+
+        Args:
+            evt_time (:obj:`datetime`): The scheduled time of the status change.
+                Schedulers need Unix timestamps, so this has to be converted
+                inside the function.
+            number (str): Flight number of the flight that should be observed.
+                This function itself does not need it but it has to be passed on
+                as an argument.
+
+        """
+        # evt_time is given in local airport time but needs to be checked against
+        # system time
+        scheduler = sched.scheduler(time.time, time.sleep)
+        evt_time = datetime.timestamp(evt_time + usr_offset)
+        # lambda needs to target an event so it can be canceled
+        # print(evt_time)
+        threading.Thread(target=lambda: scheduler.enterabs(evt_time, 2, check_dep, [number])).start()
+        scheduler.run()
 
 
-app = App()
-app.geometry('750x500+1400+400')
-app.mainloop()
+if __name__ == '__main__':
+    app = App()
+    app.geometry('750x500+1400+400')
+    app.mainloop()

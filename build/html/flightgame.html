@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2D2D2D" />
+  
+  <title>Virtual Tour :: flightgame module</title>
+  
+
+  <link rel="icon" type="image/png" sizes="32x32" href="_static/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="_static/img/favicon-16x16.png">
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+
+  <link rel="stylesheet" href="_static/css/insegel.css"/>
+
+  <script type="text/javascript">
+    var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'',
+        VERSION:'0.1.0-alpha',
+        LANGUAGE:'None',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+    };
+  </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+
+  <script src="https://email.tl.fortawesome.com/c/eJxNjUEOgyAQAF8jR7Kw6wIHDh7sP1Cw2mgxgmn6-3JsMqc5zEQfE8dkxOY1KKMUOI3ACFKRJpSW2AAp7ontYIaxI6i7XPJVwyeVfCQ550Os3jLrGSNOLgbdAy6s0PBk2TFNjEbsfq31LB0OnX407pJa5v2faRadwSW63mn5KuLyR9j2tgx3zecanl-55R_-jjPs"></script>
+
+</head>
+
+<body>
+  <div id="insegel-container">
+    <header>
+      <div id="logo-container">
+          
+          <a href="index.html"><img src="_static/img/logo.svg"></a>
+          
+
+      </div>
+      <div id="project-container">
+        <h1>Virtual Tour Documentation</h1>
+      </div>
+    </header>
+
+    <div id="content-container">
+
+      <div id="main-content-container">
+        <div id="main-content-header">
+          <h1>flightgame module</h1>
+        </div>
+        <div id="main-content">
+          
+  <div class="section" id="module-flightgame">
+<span id="flightgame-module"></span><h1>flightgame module<a class="headerlink" href="#module-flightgame" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="flightgame.App">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">App</span></span><a class="headerlink" href="#flightgame.App" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Tk</span></code></p>
+<p>The main class that starts the app and keeps it running.</p>
+<p>In this class, the frames are created, as well as the functions to switch
+between them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.App.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.App.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new Toplevel widget on screen SCREENNAME. A new Tcl interpreter will
+be created. BASENAME will be used for the identification of the profile file (see
+readprofile).
+It is constructed from sys.argv[0] without extensions if None is given. CLASSNAME
+is the name of the widget class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.App.show_frame">
+<span class="sig-name descname"><span class="pre">show_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.App.show_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flightgame.CurrentFlight">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">CurrentFlight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.CurrentFlight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Frame</span></code></p>
+<p>Info about the current flight the player is on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tk.Frame</span></code>) – “Master”-Frame into which the frame is
+loaded.</p></li>
+<li><p><strong>controller</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>) – Controller-class in which the frame-switching
+function is defined.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.CurrentFlight.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.CurrentFlight.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a frame widget with the parent MASTER.</p>
+<p>Valid resource names: background, bd, bg, borderwidth, class,
+colormap, container, cursor, height, highlightbackground,
+highlightcolor, highlightthickness, relief, takefocus, visual, width.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flightgame.Departures">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">Departures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Frame</span></code></p>
+<p>Departure screen</p>
+<p>Shows a list of all the upcoming departures from the current airport.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tk.Frame</span></code>) – “Master”-Frame into which the frame is
+loaded.</p></li>
+<li><p><strong>controller</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>) – Controller-class in which the frame-switching
+function is defined.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Departures.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a frame widget with the parent MASTER.</p>
+<p>Valid resource names: background, bd, bg, borderwidth, class,
+colormap, container, cursor, height, highlightbackground,
+highlightcolor, highlightthickness, relief, takefocus, visual, width.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Departures.check_in">
+<span class="sig-name descname"><span class="pre">check_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures.check_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the active flight for the player and waits for departure.</p>
+<p><cite>player_cur_flt</cite> will be set to the selected flight (object).
+A scheduler will be set that waits until the <em>scheduled</em> departure of
+the flight. Once that time is reached, the program will check every
+60 seconds if the flight has gone live.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flight</strong> (<a class="reference internal" href="Flight.html#module-Flight" title="Flight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Flight</span></code></a>) – The flight selected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Departures.create_flights">
+<span class="sig-name descname"><span class="pre">create_flights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures.create_flights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Departures.select_flight">
+<span class="sig-name descname"><span class="pre">select_flight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures.select_flight" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Departures.stand_by">
+<span class="sig-name descname"><span class="pre">stand_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Departures.stand_by" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waiting for scheduled time</p>
+<p>Starts a scheduler in a separate thread that will run in the background
+until a specific time is reached, usually a time in a flight’s
+schedule. Once that specific time is reached, the program will regularly
+check if the state of the flight has changed as expected.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<ul class="simple">
+<li><p>Storing schedule times in the <cite>Flight</cite> class as a Unix timestamp
+might be more convenient.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evt_time</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime</span></code>) – The scheduled time of the status change.
+Schedulers need Unix timestamps, so this has to be converted
+inside the function.</p></li>
+<li><p><strong>number</strong> (<em>str</em>) – Flight number of the flight that should be observed.
+This function itself does not need it but it has to be passed on
+as an argument.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flightgame.PlayerInfo">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">PlayerInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.PlayerInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Frame</span></code></p>
+<p>Player info page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tk.Frame</span></code>) – “Master”-Frame into which the frame is
+loaded.</p></li>
+<li><p><strong>controller</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>) – Controller-class in which the frame-switching
+function is defined.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.PlayerInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.PlayerInfo.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a frame widget with the parent MASTER.</p>
+<p>Valid resource names: background, bd, bg, borderwidth, class,
+colormap, container, cursor, height, highlightbackground,
+highlightcolor, highlightthickness, relief, takefocus, visual, width.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flightgame.Start">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">Start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Frame</span></code></p>
+<p>Start page w/ navigation to other pages</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>container</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tk.Frame</span></code>) – “Master”-Frame into which the frame is
+loaded.</p></li>
+<li><p><strong>controller</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>) – Controller-class in which the frame-switching
+function is defined.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flightgame.Start.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">controller</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.Start.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a frame widget with the parent MASTER.</p>
+<p>Valid resource names: background, bd, bg, borderwidth, class,
+colormap, container, cursor, height, highlightbackground,
+highlightcolor, highlightthickness, relief, takefocus, visual, width.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flightgame.check_dep">
+<span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">check_dep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.check_dep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if flight has departed.</p>
+<p>When a flight departs, its status bool is set to True. This function checks
+for this change. If the flight has not gone live, the function will
+restart itself in a background thread and check again in one minute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong> (<em>str</em>) – The flight number of the flight to be checked.</p></li>
+<li><p><strong>limit</strong> (<em>int</em>) – Defaults to 30. The length of the flight history list. This
+is necessary because the current flight is not always the first
+flight in the list. Future flights may be above. Most flights will
+require limits well below 30.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flightgame.start_thread">
+<span class="sig-prename descclassname"><span class="pre">flightgame.</span></span><span class="sig-name descname"><span class="pre">start_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flightgame.start_thread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Threading is required to wait for event (eg. departure) while still
+allowing the app to be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> – Function to be executed in the thread.</p></li>
+<li><p><strong>delay</strong> (<em>int</em>) – Frequency with which the function should be executed.</p></li>
+<li><p><strong>*args</strong> – Arguments passed to the function.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+        </div>
+      </div>
+
+      <div id="side-menu-container">
+
+        <div id="search" role="search">
+        <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+            <input type="text" name="q" placeholder="Search..." />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+        </form>
+</div>
+
+        <div id="side-menu" role="navigation">
+
+          
+  
+    
+  
+  
+    <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">VirtualTour</a></li>
+</ul>
+
+  
+
+
+        </div>
+
+        
+
+      </div>
+
+    </div>
+
+<footer>
+    <div id="footer-info">
+        <ul id="build-details">
+            
+                <li class="footer-element">
+                    
+                        <a href="_sources/flightgame.rst.txt" rel="nofollow"> source</a>
+                    
+                </li>
+            
+
+            
+
+            
+        </ul>
+        <div id="credit">
+            created with <a href="http://sphinx-doc.org/">Sphinx</a> and <a href="https://github.com/Autophagy/insegel">Insegel</a>
+
+        </div>
+    </div>
+
+    <a id="menu-toggle" class="fa fa-bars" aria-hidden="true"></a>
+
+    <script type="text/javascript">
+      $("#menu-toggle").click(function() {
+        $("#menu-toggle").toggleClass("toggled");
+        $("#side-menu-container").slideToggle(300);
+      });
+    </script>
+
+</footer> 
+
+</div>
+
+</body>
+</html>

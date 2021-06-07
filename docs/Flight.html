@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2D2D2D" />
+  
+  <title>Virtual Tour :: Flight module</title>
+  
+
+  <link rel="icon" type="image/png" sizes="32x32" href="_static/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="_static/img/favicon-16x16.png">
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+
+  <link rel="stylesheet" href="_static/css/insegel.css"/>
+
+  <script type="text/javascript">
+    var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:'',
+        VERSION:'0.1.0-alpha',
+        LANGUAGE:'None',
+        COLLAPSE_INDEX:false,
+        FILE_SUFFIX:'.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+    };
+  </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+
+  <script src="https://email.tl.fortawesome.com/c/eJxNjUEOgyAQAF8jR7Kw6wIHDh7sP1Cw2mgxgmn6-3JsMqc5zEQfE8dkxOY1KKMUOI3ACFKRJpSW2AAp7ontYIaxI6i7XPJVwyeVfCQ550Os3jLrGSNOLgbdAy6s0PBk2TFNjEbsfq31LB0OnX407pJa5v2faRadwSW63mn5KuLyR9j2tgx3zecanl-55R_-jjPs"></script>
+
+</head>
+
+<body>
+  <div id="insegel-container">
+    <header>
+      <div id="logo-container">
+          
+          <a href="index.html"><img src="_static/img/logo.svg"></a>
+          
+
+      </div>
+      <div id="project-container">
+        <h1>Virtual Tour Documentation</h1>
+      </div>
+    </header>
+
+    <div id="content-container">
+
+      <div id="main-content-container">
+        <div id="main-content-header">
+          <h1>Flight module</h1>
+        </div>
+        <div id="main-content">
+          
+  <div class="section" id="module-Flight">
+<span id="flight-module"></span><h1>Flight module<a class="headerlink" href="#module-Flight" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="Flight.Flight">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Flight.</span></span><span class="sig-name descname"><span class="pre">Flight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dep_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Flight.Flight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Flight class</p>
+<p>A class representing a flight the player can take ingame.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<ul class="simple">
+<li><p>Define format of “plane” argument (full string or ICAO code)</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>airline</strong> (<em>str</em>) – The full name of the flight’s airline</p></li>
+<li><p><strong>number</strong> (<em>str</em>) – The flightnumber, usually formated as XX000, although
+this may vary.</p></li>
+<li><p><strong>plane</strong> (<em>str</em>) – The type of plane operating the flight. Exact format yet
+to be decided.</p></li>
+<li><p><strong>reg</strong> (<em>str</em>) – Registration of the plane. Most commonly formated as
+X[X]-XXX[X] or NXXX00, although significant deviation from this
+pattern are possible.</p></li>
+<li><p><strong>ori</strong> (<em>str</em>) – Three-letter IATA code of the departure airport.</p></li>
+<li><p><strong>ori_cit</strong> (<em>str</em>) – City the departure airport is located in.</p></li>
+<li><p><strong>ori_offset</strong> (<em>int</em>) – Time offset from UTC of the city of origin in <strong>seconds</strong>.</p></li>
+<li><p><strong>ori_coord</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of float) – Coordinates of the city of origin.</p></li>
+<li><p><strong>dest</strong> (<em>str</em>) – Three-letter IATA code of the destination airport.</p></li>
+<li><p><strong>dest_cit</strong> (<em>str</em>) – City the destination airport is located in.</p></li>
+<li><p><strong>dest_offset</strong> (<em>int</em>) – Time offset from UTC of the destination in <strong>seconds</strong>.</p></li>
+<li><p><strong>dest_coord</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of float) – Coordinates of the destination.</p></li>
+<li><p><strong>dep_time</strong> (<em>int</em>) – Departure time as a Unix time stamp.</p></li>
+<li><p><strong>arr_time</strong> (<em>int</em>) – Arrival time as a Unix time stamp.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.ori_offset">
+<span class="sig-name descname"><span class="pre">ori_offset</span></span><a class="headerlink" href="#Flight.Flight.ori_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time offset from UTC of the city of
+origin as a timedelta object, calculated from the input in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.dest_offset">
+<span class="sig-name descname"><span class="pre">dest_offset</span></span><a class="headerlink" href="#Flight.Flight.dest_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time offset from UTC of the destination
+as a timedelta object, calculated from the input in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><a class="headerlink" href="#Flight.Flight.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Great-circle distance between origin and destination
+based on their respective coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.dep_time">
+<span class="sig-name descname"><span class="pre">dep_time</span></span><a class="headerlink" href="#Flight.Flight.dep_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Departure time as a UTC datetime object
+calculated from the Unix time stamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.arr_time">
+<span class="sig-name descname"><span class="pre">arr_time</span></span><a class="headerlink" href="#Flight.Flight.arr_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrival time as a UTC datetime object
+calculated from the Unix time stamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Flight.Flight.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><a class="headerlink" href="#Flight.Flight.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total flight time calculated from departure
+and arrival time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Flight.Flight.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_city</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dep_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr_time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Flight.Flight.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Flight.Flight.calc_distance">
+<span class="sig-name descname"><span class="pre">calc_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Flight.Flight.calc_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance calculation</p>
+<p>Calculates the great-circle distance between two points on Earth based
+on their coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orig</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of float) – Coordinates of the first point</p></li>
+<li><p><strong>dest</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of float) – Coordinates of the second point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance in km</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+        </div>
+      </div>
+
+      <div id="side-menu-container">
+
+        <div id="search" role="search">
+        <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+            <input type="text" name="q" placeholder="Search..." />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+        </form>
+</div>
+
+        <div id="side-menu" role="navigation">
+
+          
+  
+    
+  
+  
+    <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">VirtualTour</a></li>
+</ul>
+
+  
+
+
+        </div>
+
+        
+
+      </div>
+
+    </div>
+
+<footer>
+    <div id="footer-info">
+        <ul id="build-details">
+            
+                <li class="footer-element">
+                    
+                        <a href="_sources/Flight.rst.txt" rel="nofollow"> source</a>
+                    
+                </li>
+            
+
+            
+
+            
+        </ul>
+        <div id="credit">
+            created with <a href="http://sphinx-doc.org/">Sphinx</a> and <a href="https://github.com/Autophagy/insegel">Insegel</a>
+
+        </div>
+    </div>
+
+    <a id="menu-toggle" class="fa fa-bars" aria-hidden="true"></a>
+
+    <script type="text/javascript">
+      $("#menu-toggle").click(function() {
+        $("#menu-toggle").toggleClass("toggled");
+        $("#side-menu-container").slideToggle(300);
+      });
+    </script>
+
+</footer> 
+
+</div>
+
+</body>
+</html>
