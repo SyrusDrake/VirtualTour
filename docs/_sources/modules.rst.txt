@@ -9,4 +9,9 @@ VirtualTour
    Player
    credentials
    flightgame
+   list_check
+   login
+   query
    sandbox
+   test
+   timezones

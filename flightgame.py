@@ -1,15 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-from pyflightdata import FlightData
 from datetime import datetime, timedelta
-from time import gmtime, strftime
+from time import gmtime, strftime, sleep
 import time
 from Player import Player
 from Flight import Flight
-import keyring
+from login import f
 import threading
 import logging
 import sched
+import pytz
 
 # Sets up logger to record all bad flights.
 formatter = logging.Formatter("%(asctime)s_%(name)s\n%(message)s\n")
@@ -22,13 +22,8 @@ file_handler.setFormatter(formatter)
 bad_flight.addHandler(file_handler)
 
 
-utc_time = datetime.utcnow()    # Current UTC time
-usr_time = datetime.now()       # Current system time
-usr_offset = usr_time - utc_time    # Offset
-player = Player('Syrus', 'flo.fruehwirth@gmail.com', 'LAX', usr_offset)
-f = FlightData()
-f.login(player.username, keyring.get_password('FR24', player.username))
-airport = player.home
+player = Player('Syrus', 'flo.fruehwirth@gmail.com', 'BSL')
+player.update_airport('LAX')
 print(f.is_authenticated())
 
 
@@ -61,12 +56,13 @@ def check_dep(number, limit=30):
     flight = f.get_history_by_flight_number(number, limit=limit)
     now = datetime.now()
     print(f'ping at: {now}')
-    for i in flight:
-        if i['status']['live'] is True:
-            print(i)
-            print(i['time']['real']['departure'])
+    for index, item in enumerate(flight):
+        if item['status']['live'] is True:
+            print(item)
+            print(item['time']['real']['departure'])
             print('is live')
             player.is_inflight = True
+            player.cur_flt.index = index
             return
 
     start_thread(check_dep, 60, number)
@@ -83,6 +79,12 @@ class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
 
+        self.utc = None
+        self.home = None
+        self.cur = None
+
+        self.time()
+
         frames = [
             Start,
             PlayerInfo,
@@ -91,10 +93,23 @@ class App(tk.Tk):
         ]
 
         # Creates a container for all the pages (should never be visible)
+        time_frame = tk.Frame(self, bg='yellow')
         frame_container = tk.Frame(self, bg='red')
+        time_frame.pack(side='top', fill='both')
+        time_frame.grid_columnconfigure(0, weight=1)
+        time_frame.grid_columnconfigure(1, weight=1)
+        time_frame.grid_columnconfigure(2, weight=1)
         frame_container.pack(side='top', fill='both', expand=True)
         frame_container.grid_rowconfigure(0, weight=1)
         frame_container.grid_columnconfigure(0, weight=1)
+
+        self.utc_time = tk.Label(time_frame)
+        self.local_time = tk.Label(time_frame, bg='red')
+        self.virt_time = tk.Label(time_frame)
+        self.utc_time.grid(row=0, column=0, sticky='nsew')
+        self.local_time.grid(row=0, column=1, sticky='nsew')
+        self.virt_time.grid(row=0, column=2, sticky='nsew')
+        self.print_time()
 
         # Initiates a dictionary of frames
         self.framedict = {}
@@ -114,6 +129,27 @@ class App(tk.Tk):
     def show_frame(self, page_name):
         frame = self.framedict[page_name]
         frame.tkraise()
+
+    def time(self):
+        """Updates time
+
+        Updates time and sets UTC, real time, and virtual time
+        """
+        self.utc = pytz.utc.localize(datetime.utcnow())
+        self.home = self.utc.astimezone(pytz.timezone(player.tz))
+        self.cur = self.utc.astimezone(pytz.timezone(player.cur_tz))
+
+    def print_time(self):
+        """Prints all three times at the top of the window
+        """
+        self.time()
+        utc = self.utc.strftime('%H:%M:%S %Z')
+        local = self.home.strftime('%H:%M:%S %Z')
+        vrt = self.cur.strftime('%H:%M:%S %Z')
+        self.utc_time.config(text=f'UTC: {utc}')
+        self.local_time.config(text=f'LCL: {local}')
+        self.virt_time.config(text=f'VRT: {vrt}')
+        self.local_time.after(1000, self.print_time)
 
 
 class Start(tk.Frame):
@@ -190,6 +226,7 @@ class Departures(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container)
 
+        airport = player.cur_airport
         self.details = f.get_airport_details(airport)
         self.iata = self.details['code']['iata']
         self.city = self.details['position']['region']['city']
@@ -367,7 +404,9 @@ class Departures(tk.Frame):
         # evt_time is given in local airport time but needs to be checked against
         # system time
         scheduler = sched.scheduler(time.time, time.sleep)
-        evt_time = datetime.timestamp(evt_time + usr_offset)
+        tz = pytz.timezone(player.cur_tz)
+        offset = evt_time.astimezone(tz).utcoffset().total_seconds()
+        evt_time = datetime.timestamp(evt_time + offset)
         # lambda needs to target an event so it can be canceled
         # print(evt_time)
         threading.Thread(target=lambda: scheduler.enterabs(evt_time, 2, check_dep, [number])).start()

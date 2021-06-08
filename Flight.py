@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import math
-
+from login import f
 
 class Flight():
     """Flight class
@@ -31,6 +31,8 @@ class Flight():
         arr_time (int): Arrival time as a Unix time stamp.
 
     Attributes:
+        index (int): The index of the flight in its history. Will be used to
+            request status updates instead of looping through the history.
         ori_offset (:obj:`timedelta`): Time offset from UTC of the city of
             origin as a timedelta object, calculated from the input in seconds.
         dest_offset (:obj:`timedelta`): Time offset from UTC of the destination
@@ -61,12 +63,42 @@ class Flight():
         self.dest = dest                    # Destination IATA code
         self.dest_city = dest_city          # Destination city
         self.dest_coord = dest_coord        # Coordinates as tuple
+        self.index = None                  # The list index of the flight in its own history
         self.dest_offset = timedelta(seconds=dest_offset)  # Timezone offset as timedelta
         self.distance = self.calc_distance(self.ori_coord, self.dest_coord)  # Distance calculated from coordinates
         self.dep_time = datetime.fromtimestamp(dep_time)    # Departure time as datetime object UTC
         self.arr_time = datetime.fromtimestamp(arr_time)    # Arrival time as datetime object UTC
         self.duration = self.arr_time - self.dep_time       # Flight time in timedelta
         # Use x = strftime(strftime('%H:%M'), gmtime(diff.seconds)) to get timestring from delta
+
+    def request_state(self):
+        """Returns the current state of the flight.
+
+        Returns:
+            str: State of the flight. "In flight" if still ongoing,
+            "landed" if on the ground.
+        """
+        x = f.get_history_by_flight_number(self.number, page=1, limit=self.index + 5)
+        if x[self.index]['status']['generic']['status']['type'] == "departure":
+            self.refresh_index()
+            self.request_state()
+        elif (x[self.index]['status']['generic']['status']['type'] == "arrival"
+              and x[self.index]['status']['generic']['status']['text'] != "landed"):
+            return "in flight"
+        elif (x[self.index]['status']['generic']['status']['text'] == "landed"):
+            return "landed"
+
+    def refresh_index(self):
+        """Refreshes the index of the active flight.
+
+        It is possible that future flights get added to the list while the
+        flight is still active. If this happens, the index needs to be updated.
+        """
+        x = f.get_history_by_flight_number(self.number, page=1, limit=20)
+        for index, item in enumerate(x):
+            if item['status']['generic']['status']['type'] == "arrival":
+                break
+        self.index = index
 
     def calc_distance(self, orig, dest):
         """Distance calculation

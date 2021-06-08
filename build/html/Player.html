@@ -61,7 +61,7 @@
 <span id="player-module"></span><h1>Player module<a class="headerlink" href="#module-Player" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="Player.Player">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Player.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Player.Player" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">Player.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Player.Player" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Player class, containing all relevant information</p>
 <dl class="field-list simple">
@@ -71,8 +71,6 @@
 <li><p><strong>username</strong> (<em>str</em>) – Username of the player’s FR24 profile. Required to log
 in and access additional data.</p></li>
 <li><p><strong>home</strong> (<em>str</em>) – Three-letter IATA code of the player’s home airport.</p></li>
-<li><p><strong>offset</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code>) – Time offset from UTC of the player’s <strong>actual
-physical location</strong>. This does not change through ingame actions!</p></li>
 </ul>
 </dd>
 </dl>
@@ -121,6 +119,18 @@ physical location</strong>. This does not change through ingame actions!</p></li
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="Player.Player.tz">
+<span class="sig-name descname"><span class="pre">tz</span></span><a class="headerlink" href="#Player.Player.tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timezone of the player’s <strong>actual
+physical location</strong>. This does not change through ingame actions!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="Player.Player.cur_airport">
 <span class="sig-name descname"><span class="pre">cur_airport</span></span><a class="headerlink" href="#Player.Player.cur_airport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Three-letter IATA code of the airport the player is
@@ -133,22 +143,50 @@ currently at.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="Player.Player.cur_offset">
-<span class="sig-name descname"><span class="pre">cur_offset</span></span><a class="headerlink" href="#Player.Player.cur_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Current time offset from UTC of the
+<dt class="sig sig-object py" id="Player.Player.cur_tz">
+<span class="sig-name descname"><span class="pre">cur_tz</span></span><a class="headerlink" href="#Player.Player.cur_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current timezone of the
 player’s current <em>virtual</em> position. This value changes through
 ingame actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">timedelta</span></code></p>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Player.Player.is_chk_in">
+<span class="sig-name descname"><span class="pre">is_chk_in</span></span><a class="headerlink" href="#Player.Player.is_chk_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the player is currently checked in</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Player.Player.is_inflight">
+<span class="sig-name descname"><span class="pre">is_inflight</span></span><a class="headerlink" href="#Player.Player.is_inflight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the player is currently on an active flight</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Player.Player.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Player.Player.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Player.Player.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="Player.Player.update_airport">
+<span class="sig-name descname"><span class="pre">update_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Player.Player.update_airport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the current airport as well as the corresponding time zone.</p>
 </dd></dl>
 
 </dd></dl>
