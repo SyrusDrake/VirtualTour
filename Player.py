@@ -1,5 +1,6 @@
 from login import f
 
+
 class Player():
     """Player class, containing all relevant information
 
@@ -23,6 +24,7 @@ class Player():
             ingame actions.
         is_chk_in(bool): Whether or not the player is currently checked in
         is_inflight(bool): Whether the player is currently on an active flight
+        standby(bool): Whether the player is waiting for an event (departure, arrival)
         """
 
     def __init__(self, name, username, home):
@@ -35,13 +37,20 @@ class Player():
         self.flights = []
         self.total_time = 0
         self.tz = f.get_airport_details(home)['timezone']['name']
-        self.cur_airport = None
+        self.cur_airport = home
         self.cur_tz = None
         self.is_chk_in = False
         self.is_inflight = False
+        self.standby = False
 
     def update_airport(self, airport):
         """Updates the current airport as well as the corresponding time zone.
         """
         self.cur_airport = airport
         self.cur_tz = f.get_airport_details(airport)['timezone']['name']
+
+    def check_out(self):
+        print('checking out...')
+        self.standby = False
+        self.is_chk_in = False
+        self.cur_flt = None

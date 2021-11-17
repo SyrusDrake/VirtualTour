@@ -1,8 +1,10 @@
+from itertools import filterfalse
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from datetime import datetime, timedelta
 from time import gmtime, strftime, sleep
 import time
+import tkinter
 from Player import Player
 from Flight import Flight
 from login import f
@@ -84,9 +86,8 @@ class App(tk.Tk):
 
         frames = [
             Start,
-            PlayerInfo,
-            Departures,
-            CurrentFlight
+            Info,
+            Departures
         ]
 
         # Creates a container for all the pages (should never be visible)
@@ -145,7 +146,7 @@ class App(tk.Tk):
         self.utc_time.config(text=f'UTC: {utc}')
         self.local_time.config(text=f'LCL: {local}')
         self.virt_time.config(text=f'VRT: {vrt}')
-        self.local_time.after(1000, self.print_time)
+        self.after(1000, self.print_time)
 
 
 class Start(tk.Frame):
@@ -164,20 +165,17 @@ class Start(tk.Frame):
         self.label = ttk.Label(self, text='hello')
         self.label.pack()
 
-        self.b_Player = ttk.Button(
-            self, text='Player', command=lambda: controller.show_frame('PlayerInfo'))
-        self.b_cur_flt = ttk.Button(
-            self, text='Current Flight', command=lambda: controller.show_frame('CurrentFlight'))
+        self.b_Info = ttk.Button(
+            self, text='Info', command=lambda: controller.show_frame('Info'))
         self.b_Departures = ttk.Button(
             self, text='Departures', command=lambda: controller.show_frame('Departures'))
-        self.b_Player.pack()
-        self.b_cur_flt.pack()
+        self.b_Info.pack()
         self.b_Departures.pack()
 
 
-class PlayerInfo(tk.Frame):
+class Info(tk.Frame):
 
-    """Player info page
+    """General Info Page
     Args:
         container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
             loaded.
@@ -188,28 +186,125 @@ class PlayerInfo(tk.Frame):
     def __init__(self, container, controller):
         tk.Frame.__init__(self, container)
 
-        self.label = ttk.Label(self, text=player.name)
-        self.label.pack()
-
+        self.player_frame = tk.Frame(self, bg='yellow')
+        self.flight_frame = tk.Frame(self, bg='blue')
+        self.b_cancel = ttk.Button(
+            self, text='Check out', command=player.check_out)
         self.b_back = ttk.Button(
-            self, text='Start', command=lambda: controller.show_frame('Start'))
-        self.b_back.pack()
+            self, text='Back', command=lambda: controller.show_frame('Start'))
 
+        self.player_frame.grid(row=0, column=0, sticky='nsew')
+        self.flight_frame.grid(row=0, column=1, sticky='nsew')
+        self.b_back.grid(row=1, column=0, sticky='n')
+        self.b_cancel.grid(row=1, column=1, sticky='n')
 
-class CurrentFlight(tk.Frame):
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
 
-    """Info about the current flight the player is on
-    Args:
-        container (:obj:`tk.Frame`): "Master"-Frame into which the frame is
-            loaded.
-        controller (:obj:`class`): Controller-class in which the frame-switching
-            function is defined.
-    """
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
 
-    def __init__(self, container, controller):
-        tk.Frame.__init__(self, container)
+        self.p_header = ttk.Label(self.player_frame, text='Player Info')
+        self.p_name_label = ttk.Label(
+            self.player_frame, text="Name: ", width=20)
+        self.p_name_entry = ttk.Label(
+            self.player_frame, width=20, background='white', relief='ridge')
+        self.p_home_label = ttk.Label(self.player_frame, text="Home: ")
+        self.p_home_entry = ttk.Label(
+            self.player_frame, width=20, background='white', relief='ridge')
+        self.p_dist_label = ttk.Label(self.player_frame, text="Distance: ")
+        self.p_dist_entry = ttk.Label(
+            self.player_frame, width=20, background='white', relief='ridge')
+        self.p_time_label = ttk.Label(
+            self.player_frame, text="Total Flight Time: ")
+        self.p_time_entry = ttk.Label(
+            self.player_frame, width=20, background='white', relief='ridge')
+        self.p_curap_label = ttk.Label(
+            self.player_frame, text="Current Airport: ")
+        self.p_curap_entry = ttk.Label(
+            self.player_frame, width=20, background='white', relief='ridge')
 
-        self.b_back = ttk.Button(self, text='Start')
+        self.p_header.grid(row=0, column=0, columnspan=2, sticky='nsew')
+        self.p_name_label.grid(row=1, column=0)
+        self.p_name_entry.grid(row=1, column=1)
+        self.p_home_label.grid(row=2, column=0)
+        self.p_home_entry.grid(row=2, column=1)
+        self.p_dist_label.grid(row=3, column=0)
+        self.p_dist_entry.grid(row=3, column=1)
+        self.p_time_label.grid(row=4, column=0)
+        self.p_time_entry.grid(row=4, column=1)
+        self.p_curap_label.grid(row=5, column=0)
+        self.p_curap_entry.grid(row=5, column=1)
+
+        self.flight_header = ttk.Label(
+            self.flight_frame, text='Current Flight Info')
+        self.f_curflight_label = ttk.Label(
+            self.flight_frame, text="Flight Number: ", width=20)
+        self.f_curflight_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_reg_label = ttk.Label(
+            self.flight_frame, text="Registration: ", width=20)
+        self.f_reg_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_ori_label = ttk.Label(
+            self.flight_frame, text="Origin: ", width=20)
+        self.f_ori_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_dest_label = ttk.Label(
+            self.flight_frame, text="Destination: ", width=20)
+        self.f_dest_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_eta_label = ttk.Label(
+            self.flight_frame, text="ETA: ", width=20)
+        self.f_eta_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_remaining_label = ttk.Label(
+            self.flight_frame, text="Time left (approx.): ", width=20)
+        self.f_remaining_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+
+        self.flight_header.grid(row=0, column=0, columnspan=2, sticky='nsew')
+        self.f_curflight_label.grid(row=1, column=0)
+        self.f_curflight_entry.grid(row=1, column=1)
+        self.f_reg_label.grid(row=2, column=0)
+        self.f_reg_entry.grid(row=2, column=1)
+        self.f_ori_label.grid(row=3, column=0)
+        self.f_ori_entry.grid(row=3, column=1)
+        self.f_dest_label.grid(row=4, column=0)
+        self.f_dest_entry.grid(row=4, column=1)
+        self.f_eta_label.grid(row=5, column=0)
+        self.f_eta_entry.grid(row=5, column=1)
+        self.f_remaining_label.grid(row=6, column=0)
+        self.f_remaining_entry.grid(row=6, column=1)
+
+        self.update_info()
+
+    def update_info(self):
+
+        self.flight = player.cur_flt
+
+        self.p_name_entry.config(text=player.name)
+        self.p_home_entry.config(text=player.home)
+        self.p_dist_entry.config(text=player.total_dist)
+        self.p_time_entry.config(text=player.total_time)
+        self.p_curap_entry.config(text=player.cur_airport)
+
+        try:
+            self.f_curflight_entry.config(
+                text=self.flight.airline + ' ' + self.flight.number)
+            self.f_reg_entry.config(text=self.flight.reg)
+            self.f_ori_entry.config(
+                text=self.flight.ori_city + ' (' + self.flight.ori + ')')
+            self.f_dest_entry.config(
+                text=self.flight.dest_city + ' (' + self.flight.dest + ')')
+
+        except Exception:
+            self.f_curflight_entry.config(text='')
+            self.f_reg_entry.config(text='')
+            self.f_ori_entry.config(text='')
+            self.f_dest_entry.config(text='')
+
+        self.after(1000, self.update_info)
 
 
 class Departures(tk.Frame):
@@ -356,7 +451,7 @@ class Departures(tk.Frame):
         self.number_entry.delete(0, 'end')
         self.number_entry.insert(0, flight.number)
         self.dest_entry.delete(0, 'end')
-        self.dest_entry.insert(0, flight.dest_city + '(' + flight.dest + ')')
+        self.dest_entry.insert(0, flight.dest_city + ' (' + flight.dest + ')')
         self.dep_entry.delete(0, 'end')
         self.dep_entry.insert(
             0, ((flight.dep_time + flight.ori_offset).strftime('%H:%M')))
@@ -379,26 +474,30 @@ class Departures(tk.Frame):
         A scheduler will be set that waits until the *scheduled* departure of
         the flight. Once that time is reached, the program will check every
         60 seconds if the flight has gone live.
+        If the player is already checked in to a flight, an error will be displayed.
         Args:
             flight (:obj:`Flight`): The flight selected
         """
         # pass selected flight to Player
-        player.cur_flt = flight
-        player.is_chk_in = True
-        # start countdown and wait for departure
-        print(
-            f'Checking in to flight {flight.number}, departing at {flight.dep_time.time()} UTC')
-        self.stand_by(flight.dep_time, flight.number)
+        if player.is_chk_in is True:
+            tk.messagebox.showerror(
+                title='Already checked in', message=f'You area already checked into flight {player.cur_flt.number}. Please check out first if you want to change your flight.')
+            pass
+        else:
+            player.cur_flt = flight
+            player.is_chk_in = True
+            player.standby = True
+            # start countdown and wait for departure
+            print(
+                f'Checking in to flight {flight.number}, departing at {flight.dep_time.time()} UTC')
+            self.standby_thread = threading.Thread(
+                target=self.stand_by, args=(flight.dep_time, flight.number))
+            self.standby_thread.start()
 
     def stand_by(self, evt_time, number):
         """Waiting for scheduled time
-        Starts a scheduler in a separate thread that will run in the background
-        until a specific time is reached, usually a time in a flight's
-        schedule. Once that specific time is reached, the program will regularly
-        check if the state of the flight has changed as expected.
+        Starts a separate thread that will regularly check if a specific time is reached. Once that time is reached, the program will regularly check if the state of the flight has changed as expected.
         Todo:
-            * This does not seem to be threaded, so the application freezes
-                while waiting.
             * Storing schedule times in the `Flight` class as a Unix timestamp
               might be more convenient.
         Args:
@@ -409,19 +508,37 @@ class Departures(tk.Frame):
                 This function itself does not need it but it has to be passed on
                 as an argument.
         """
-        # evt_time is given in UTC time but needs to be checked against
-        # system time
-        scheduler = sched.scheduler(time.time, time.sleep)
-        tz = pytz.timezone(player.tz)
-        # Turns the event time from datetime UTC into datetime player actual
-        evt_time = pytz.utc.localize(evt_time).astimezone(tz)
-        # Turns the datetime object into a UNIX time stamp
-        evt_time = evt_time.timestamp()
-        # lambda needs to target an event so it can be canceled
-        # print(evt_time)
-        threading.Thread(target=lambda: scheduler.enterabs(
-            evt_time, 2, check_dep, [number])).start()
-        scheduler.run()
+        # # evt_time is given in UTC time but needs to be checked against
+        # # system time
+        # scheduler = sched.scheduler(time.time, time.sleep)
+        # tz = pytz.timezone(player.tz)
+        # # Turns the event time from datetime UTC into datetime player actual
+        # evt_time = pytz.utc.localize(evt_time).astimezone(tz)
+        # # Turns the datetime object into a UNIX time stamp
+        # evt_time = evt_time.timestamp()
+        # # lambda needs to target an event so it can be canceled
+        # # print(evt_time)
+        # threading.Thread(target=lambda: scheduler.enterabs(
+        #     evt_time, 2, check_dep, [number])).start()
+        # scheduler.run()
+
+        # Changes the even time from UTC to player time actual
+        target_time = evt_time.astimezone(pytz.timezone(player.tz))
+        current_time = pytz.utc.localize(
+            datetime.utcnow()).astimezone(pytz.timezone(player.tz))
+
+        if current_time < target_time and player.standby is True:
+            time.sleep(1)
+            print('still waiting...')
+            self.standby_thread = threading.Thread(
+                target=self.stand_by, args=(evt_time, number))
+            self.standby_thread.start()
+        elif player.standby is False:
+            print('Timer has been stopped')
+        else:
+            player.standby = False
+            print('Flight should be departing any minute.')
+            check_dep(number)
 
 
 if __name__ == '__main__':

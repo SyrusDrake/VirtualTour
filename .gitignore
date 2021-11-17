@@ -16,3 +16,9 @@ Makefile
 sandbox.py
 
 test.py
+check_dep.py
+flight_debugger.py
+query.py
+timezones.py
+
+Class.py

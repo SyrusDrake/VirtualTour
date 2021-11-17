@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 import math
 from login import f
+import pytz
+
 
 class Flight():
     """Flight class
@@ -46,6 +48,7 @@ class Flight():
         duration (:obj:`timedelta`): Total flight time calculated from departure
             and arrival time.
         """
+
     def __init__(
             self, airline, number, plane, reg,
             ori, ori_city, ori_offset, ori_coord,
@@ -57,17 +60,22 @@ class Flight():
         self.plane = plane                  # Full type string
         self.reg = reg                      # Registration
         self.ori = ori                      # Origin IATA
-        self.ori_cit = ori_city             # City of origin
-        self.ori_offset = timedelta(seconds=ori_offset)    # Timezone offset as timedelta
+        self.ori_city = ori_city             # City of origin
+        # Timezone offset as timedelta
+        self.ori_offset = timedelta(seconds=ori_offset)
         self.ori_coord = ori_coord          # Origin coordinates as tuple
         self.dest = dest                    # Destination IATA code
         self.dest_city = dest_city          # Destination city
         self.dest_coord = dest_coord        # Coordinates as tuple
         self.index = None                  # The list index of the flight in its own history
-        self.dest_offset = timedelta(seconds=dest_offset)  # Timezone offset as timedelta
-        self.distance = self.calc_distance(self.ori_coord, self.dest_coord)  # Distance calculated from coordinates
-        self.dep_time = datetime.fromtimestamp(dep_time)    # Departure time as datetime object UTC
-        self.arr_time = datetime.fromtimestamp(arr_time)    # Arrival time as datetime object UTC
+        # Timezone offset as timedelta
+        self.dest_offset = timedelta(seconds=dest_offset)
+        # Distance calculated from coordinates
+        self.distance = self.calc_distance(self.ori_coord, self.dest_coord)
+        self.dep_time = pytz.utc.localize(datetime.utcfromtimestamp(
+            dep_time))    # Departure time as datetime object UTC (time-zone aware)
+        self.arr_time = pytz.utc.localize(datetime.utcfromtimestamp(
+            arr_time))    # Arrival time as datetime object UTC (time-zone aware)
         self.duration = self.arr_time - self.dep_time       # Flight time in timedelta
         # Use x = strftime(strftime('%H:%M'), gmtime(diff.seconds)) to get timestring from delta
 
@@ -78,7 +86,8 @@ class Flight():
             str: State of the flight. "In flight" if still ongoing,
             "landed" if on the ground.
         """
-        x = f.get_history_by_flight_number(self.number, page=1, limit=self.index + 5)
+        x = f.get_history_by_flight_number(
+            self.number, page=1, limit=self.index + 5)
         if x[self.index]['status']['generic']['status']['type'] == "departure":
             self.refresh_index()
             self.request_state()
@@ -124,7 +133,8 @@ class Flight():
         dlon = lon2 - lon1
         dlat = lat2 - lat1
 
-        a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+        a = math.sin(dlat / 2)**2 + math.cos(lat1) * \
+            math.cos(lat2) * math.sin(dlon / 2)**2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
         dist = R * c
