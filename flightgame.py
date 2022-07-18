@@ -58,7 +58,6 @@ def check_dep(number, limit=30):
     for index, item in enumerate(flight):
         if item['status']['live'] is True:
             print(item)
-            print(item['time']['real']['departure'])
             print('is live')
             player.is_inflight = True
             player.cur_flt.index = index
@@ -192,11 +191,14 @@ class Info(tk.Frame):
             self, text='Check out', command=player.check_out)
         self.b_back = ttk.Button(
             self, text='Back', command=lambda: controller.show_frame('Start'))
+        self.b_test = ttk.Button(
+            self, text='Test', command=self.update_info)
 
         self.player_frame.grid(row=0, column=0, sticky='nsew')
         self.flight_frame.grid(row=0, column=1, sticky='nsew')
         self.b_back.grid(row=1, column=0, sticky='n')
         self.b_cancel.grid(row=1, column=1, sticky='n')
+        self.b_test.grid(row=1, column=2, sticky='n')
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -262,6 +264,14 @@ class Info(tk.Frame):
             self.flight_frame, text="Time left (approx.): ", width=20)
         self.f_remaining_entry = ttk.Label(
             self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_index_label = ttk.Label(
+            self.flight_frame, text="Current index: ", width=20)
+        self.f_index_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
+        self.f_state_label = ttk.Label(
+            self.flight_frame, text="Current state: ", width=20)
+        self.f_state_entry = ttk.Label(
+            self.flight_frame, width=20, background='white', relief='ridge')
 
         self.flight_header.grid(row=0, column=0, columnspan=2, sticky='nsew')
         self.f_curflight_label.grid(row=1, column=0)
@@ -276,8 +286,12 @@ class Info(tk.Frame):
         self.f_eta_entry.grid(row=5, column=1)
         self.f_remaining_label.grid(row=6, column=0)
         self.f_remaining_entry.grid(row=6, column=1)
+        self.f_index_label.grid(row=7, column=0)
+        self.f_index_entry.grid(row=7, column=1)
+        self.f_state_label.grid(row=8, column=0)
+        self.f_state_entry.grid(row=8, column=1)
 
-        self.update_info()
+        # self.update_info()
 
     def update_info(self):
 
@@ -289,20 +303,26 @@ class Info(tk.Frame):
         self.p_time_entry.config(text=player.total_time)
         self.p_curap_entry.config(text=player.cur_airport)
 
-        try:
-            self.f_curflight_entry.config(
-                text=self.flight.airline + ' ' + self.flight.number)
-            self.f_reg_entry.config(text=self.flight.reg)
-            self.f_ori_entry.config(
-                text=self.flight.ori_city + ' (' + self.flight.ori + ')')
-            self.f_dest_entry.config(
-                text=self.flight.dest_city + ' (' + self.flight.dest + ')')
+        # try:
+        # self.flight.refresh_index()
+        self.f_curflight_entry.config(
+            text=self.flight.short_name + ' ' + self.flight.number)
+        self.f_reg_entry.config(text=self.flight.reg)
+        self.f_ori_entry.config(
+            text=self.flight.ori_city + ' (' + self.flight.ori + ')')
+        self.f_dest_entry.config(
+            text=self.flight.dest_city + ' (' + self.flight.dest + ')')
+        self.f_index_entry.config(text=self.flight.index)
+        self.f_state_entry.config(text=self.flight.refresh_index())
 
-        except Exception:
-            self.f_curflight_entry.config(text='')
-            self.f_reg_entry.config(text='')
-            self.f_ori_entry.config(text='')
-            self.f_dest_entry.config(text='')
+        # except Exception:
+        #     print('exc')
+        #     self.f_curflight_entry.config(text='NIL')
+        #     self.f_reg_entry.config(text='')
+        #     self.f_ori_entry.config(text='')
+        #     self.f_dest_entry.config(text='')
+        #     self.f_index_entry.config(text='')
+        #     self.f_state_entry.config(text='')
 
         self.after(1000, self.update_info)
 
@@ -426,6 +446,7 @@ class Departures(tk.Frame):
                                      ['departure'])
                         dest_offset = flight['airport']['destination']['timezone']['offset']
                         airline = flight['airline']['name']
+                        short = flight['airline']['short']
                         flight_number = flight['identification']['number']['default']
                         dest = flight['airport']['destination']['code']['iata']
                         dest_city = flight['airport']['destination']['position']['region']['city']
@@ -435,7 +456,7 @@ class Departures(tk.Frame):
                                    ['arrival'])
                         plane = flight['aircraft']['model']['text']
                         reg = flight['aircraft']['registration']
-                        self.flights.append(Flight(airline, flight_number, plane, reg, self.iata, self.city,
+                        self.flights.append(Flight(airline, short, flight_number, plane, reg, self.iata, self.city,
                                             self.offset, self.coord, dest, dest_city, dest_coord, dest_offset, departure, arrival))
                     except Exception:
                         bad_flight.debug(flight)
@@ -508,19 +529,6 @@ class Departures(tk.Frame):
                 This function itself does not need it but it has to be passed on
                 as an argument.
         """
-        # # evt_time is given in UTC time but needs to be checked against
-        # # system time
-        # scheduler = sched.scheduler(time.time, time.sleep)
-        # tz = pytz.timezone(player.tz)
-        # # Turns the event time from datetime UTC into datetime player actual
-        # evt_time = pytz.utc.localize(evt_time).astimezone(tz)
-        # # Turns the datetime object into a UNIX time stamp
-        # evt_time = evt_time.timestamp()
-        # # lambda needs to target an event so it can be canceled
-        # # print(evt_time)
-        # threading.Thread(target=lambda: scheduler.enterabs(
-        #     evt_time, 2, check_dep, [number])).start()
-        # scheduler.run()
 
         # Changes the even time from UTC to player time actual
         target_time = evt_time.astimezone(pytz.timezone(player.tz))

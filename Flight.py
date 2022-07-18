@@ -50,12 +50,13 @@ class Flight():
         """
 
     def __init__(
-            self, airline, number, plane, reg,
+            self, airline, short_name, number, plane, reg,
             ori, ori_city, ori_offset, ori_coord,
             dest, dest_city, dest_coord, dest_offset,
             dep_time, arr_time):
 
         self.airline = airline              # Flight airline
+        self.short_name = short_name
         self.number = number                # Flightnumber
         self.plane = plane                  # Full type string
         self.reg = reg                      # Registration
@@ -108,6 +109,12 @@ class Flight():
             if item['status']['generic']['status']['type'] == "arrival":
                 break
         self.index = index
+
+    # def update_flight(self):
+    #     x = f.get_history_by_flight_number(
+    #         self.number, page=1, limit=self.index + 5)
+    #     self.reg = x[self.index]['aircraft']['registration']
+    #     print('updated')
 
     def calc_distance(self, orig, dest):
         """Distance calculation
